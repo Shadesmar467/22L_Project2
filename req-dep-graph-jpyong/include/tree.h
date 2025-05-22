@@ -24,4 +24,4 @@ Node* addSibling(Node* n, const char* mName); //add sibling (another child for u
 Node* addChild(Node* n, const char* mName);  //add Child dependency (downstream file)
 //the input is the node you desire to link the child to, and the module name is for the node that will be created
 
-#endif TREE_H
+#endif
