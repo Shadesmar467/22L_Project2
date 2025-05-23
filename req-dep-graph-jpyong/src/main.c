@@ -1,11 +1,7 @@
 #include <stdio.h>
 
-#include "../include/parse.h"
-//#include "../include/tree.h"
-
-//#include "../include/parse.h"
-//#include "../include/tree.h"
-#include <regex.h>
+#include "parse.h"
+#include "tree.h"
 
 int main() {
 
@@ -13,7 +9,7 @@ int main() {
   char filePath[100];
 
   printf("Please select a file (enter complete path to the file) for processing: ");
-  scanf("%s", &filePath);
+  scanf("%99s", filePath);
 
   f = fopen(filePath, "r");
   if (f == NULL) {
@@ -23,7 +19,6 @@ int main() {
 
   //scraping & printing the file name from input
   scrapeFileName(filePath);
-
 
   //print first three lines
   char ch;

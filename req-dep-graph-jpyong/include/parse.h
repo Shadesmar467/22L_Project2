@@ -1,9 +1,8 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#define MAX_LINE 1024
+#define TAG_LENGTH 20
 
 void scrapeFileName(char* filePath);
 
