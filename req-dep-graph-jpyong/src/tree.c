@@ -36,7 +36,7 @@ void addSibling(Node* rootSib, Node* newSib) {
     currentSib->next = newSib;
   }
 }
-
+ //adding to a list to keep track
 void addChild(Node* parent, Node* child) {
   if (parent == NULL || child == NULL) {
     return;
@@ -51,6 +51,14 @@ void addChild(Node* parent, Node* child) {
     }
     currentNode->next = child;
   }
+}
+
+Node* getChild(Node *n) {
+  return n->child;
+}
+
+Node* getSibling(Node *n) {
+  return n->next;
 }
 
 void freeTree(Node* root) {

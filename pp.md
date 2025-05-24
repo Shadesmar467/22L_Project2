@@ -23,7 +23,7 @@ This document defines the behavioral and functional requirements for a terminal-
 ID: REQ-FN-FEAT-0000
     Title:    Chess Game
     Parents:  --
-    Children: REQ-FN-MAIN-1001,REQ-FN-MAIN-1002,REQ-FN-MAIN-1003,REQ-FN-MAIN-1004
+    Children: REQ-FN-FEAT-1001,REQ-FN-FEAT-1002,REQ-FN-FEAT-1003,REQ-FN-FEAT-1004
     Description: A terminal-based chess game implemented in C.
 ```
 

@@ -21,6 +21,7 @@ int main() {
   scrapeFileName(filePath);
 
   //print first three lines
+  printf("\n");
   char ch;
   int i = 0;
   while (i < 3) {
@@ -29,6 +30,8 @@ int main() {
       if (ch == '\n') {i++;}
   }
   
+ //identify and print 
+  parse_SRS(filePath);
 
   fclose(f);
   return 0;

@@ -1,4 +1,5 @@
 #include "parse.h"
+#include "tree.h"
 #include <stdio.h>
 #include <string.h>
 #include <regex.h>
@@ -17,7 +18,7 @@ void scrapeFileName(char* filePath) {
     }
 
     if (fSlash != NULL) {
-      printf("Filename: %s \n", fSlash+1);
+      printf("Filename: %s \n\n", fSlash+1);
     } else {
       printf("Filename: %s \n", filePath); //if no slashes the entire input is the file name
     }
@@ -25,6 +26,13 @@ void scrapeFileName(char* filePath) {
 
 
 void parse_SRS(char* filename) {
+  char parentREQ[TAG_LENGTH]; //variables for keeping track of requirement type
+  char currentIDREQ[TAG_LENGTH];
+  char childREQ[TAG_LENGTH];
+
+  //list nodes for traversal
+  Node *root = NULL;
+
   FILE *file = fopen(filename, "r");
   if (file == NULL) {
     printf("Error opening the file, blowing up\n");
@@ -40,7 +48,14 @@ void parse_SRS(char* filename) {
   }
 
   char line[MAX_LINE]; //longest allowed line is 1024 characters long
+  int lineNum = 0; //line number 
+
   while (fgets(line, sizeof(line), file)) {
+    lineNum++;
+    int isID = IDLine(file,line);
+    int isParent = parentLine(file,line);
+    int isChild = childLine(file,line);
+
     const char *cursor = line; //created a cursor to iterate through every character per line
     regmatch_t matches[1]; //regmatch_t allows us to look for the substring REQ-XX-XXXX-NNNN
     
@@ -52,9 +67,21 @@ void parse_SRS(char* filename) {
       strncpy(tag, cursor+start, end-start); //copying found req into tag
       tag[end - start] = '\0'; //adding termination character
 
-      if (strncmp(tag + 13, "0000", 4) != 0) {  //filter out REQ-XX-YYYY-0000
-         printf("Found: %s\n", tag); 
-      }
+      //at this point, tag holds the current requirement (overwritten with new one next iteration)
+      
+      /*if "ID: " was identified on same line, this is a new requirement 
+        if "Parents: " was identified on the same line: add this node as a child
+        if "Children: " was identified on the same line: add those nodes as children*/
+        if (isID) { 
+          strcpy(currentIDREQ, tag);
+          printf("Line %d: %s --\n", lineNum, currentIDREQ); //change this line to writing into a file at some point
+        } else if (isParent){
+          strcpy(parentREQ, tag);
+          printf("Line %d: %s -> %s\n", lineNum, parentREQ, currentIDREQ);
+        } else if (isChild) {
+          strcpy(childREQ, tag);
+          printf("Line %d: %s -> %s\n", lineNum, currentIDREQ, childREQ);
+        }
 
       cursor += end; //move past the last match
     }
@@ -63,4 +90,28 @@ void parse_SRS(char* filename) {
     regfree(&regex);
     fclose(file);
 
+}
+
+int IDLine(FILE *f, char* line) {
+  const char* id = "ID: ";
+    if (strstr(line, id) != NULL) {
+      return 1;
+    }
+  return 0;
+}
+
+int parentLine(FILE *f, char* line) {
+  const char* id = "Parents: ";
+    if (strstr(line, id) != NULL) {
+      return 1;
+    }
+  return 0;
+}
+
+int childLine(FILE *f, char* line) {
+  const char* id = "Children: ";
+    if (strstr(line, id) != NULL) {
+      return 1;
+    }
+  return 0;
 }
