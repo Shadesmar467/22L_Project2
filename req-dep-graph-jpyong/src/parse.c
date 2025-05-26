@@ -25,19 +25,27 @@ void scrapeFileName(char* filePath) {
 }
 
 
-void parse_SRS(char* filename) {
+void parse_SRS(char* filename) { //read input file, generate complete output file
   char parentREQ[TAG_LENGTH]; //variables for keeping track of requirement type
   char currentIDREQ[TAG_LENGTH];
   char childREQ[TAG_LENGTH];
 
-  //list nodes for traversal
-  Node *root = NULL;
-
-  FILE *file = fopen(filename, "r");
-  if (file == NULL) {
+  FILE *file = fopen(filename, "r"); //file to read input from
+  FILE *outputFile = fopen("../rdgg-report-jpyong.md", "w"); //output file
+  if (file == NULL || outputFile == NULL) {
     printf("Error opening the file, blowing up\n");
     return;
   }
+
+  //writing first 3 lines of input to output
+  char ch;
+  int i = 0;
+  while (i < 3) {
+      ch = fgetc(file);
+      fprintf(outputFile, "%c", ch);
+      if (ch == '\n') {i++;}
+  }
+  fprintf(outputFile, "\n");
 
   regex_t regex;
   const char *pattern = "REQ-[A-Z]{2}-[A-Z]{4}-[0-9]{4}";
@@ -74,13 +82,13 @@ void parse_SRS(char* filename) {
         if "Children: " was identified on the same line: add those nodes as children*/
         if (isID) { 
           strcpy(currentIDREQ, tag);
-          printf("Line %d: %s --\n", lineNum, currentIDREQ); //change this line to writing into a file at some point
+          fprintf(outputFile, "Line %d: %s --\n", lineNum, currentIDREQ);
         } else if (isParent){
           strcpy(parentREQ, tag);
-          printf("Line %d: %s -> %s\n", lineNum, parentREQ, currentIDREQ);
+          fprintf(outputFile, "Line %d: %s -> %s\n", lineNum, parentREQ, currentIDREQ);
         } else if (isChild) {
           strcpy(childREQ, tag);
-          printf("Line %d: %s -> %s\n", lineNum, currentIDREQ, childREQ);
+          fprintf(outputFile, "Line %d: %s -> %s\n", lineNum, currentIDREQ, childREQ);
         }
 
       cursor += end; //move past the last match
@@ -90,6 +98,7 @@ void parse_SRS(char* filename) {
     regfree(&regex);
     fclose(file);
 
+    fclose(outputFile);
 }
 
 int IDLine(FILE *f, char* line) {
